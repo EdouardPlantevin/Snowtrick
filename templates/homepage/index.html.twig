@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheet %}
+    {{ encore_entry_link_tags('homepage') }}
+{% endblock %}
+
 {% block title %}Snowtrick{% endblock %}
 
 {% block body %}

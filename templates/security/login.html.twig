@@ -1,3 +1,4 @@
+{#
 {% extends 'base.html.twig' %}
 
 {% block title %}Log in!{% endblock %}
@@ -24,7 +25,8 @@
            value="{{ csrf_token('authenticate') }}"
     >
 
-    {#
+    #}
+{#
         Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
         See https://symfony.com/doc/current/security/remember_me.html
 
@@ -33,10 +35,78 @@
                 <input type="checkbox" name="_remember_me"> Remember me
             </label>
         </div>
-    #}
+    #}{#
+
 
     <button class="btn btn-lg btn-primary" type="submit">
         Sign in
     </button>
 </form>
+{% endblock %}
+
+#}
+
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+{% endblock %}
+
+{% block body %}
+    <section class="h-100 gradient-form" id="login">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-xl-10">
+                    <div class="card rounded-3 text-black">
+                        <div class="row g-0">
+                            <div class="col-lg-6">
+                                <div class="card-body p-md-5 mx-md-4">
+
+                                    <div class="text-center">
+                                        <img src="data:image/png;base64,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" style="width: 185px;" alt="logo">
+                                    </div>
+
+                                    <form method="post">
+
+                                        <div class="form-outline mb-4">
+                                            <label for="inputUsername">Pseudo</label>
+                                            <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
+                                        </div>
+
+                                        <div class="form-outline mb-4">
+                                            <label for="inputPassword">Mot de passe</label>
+                                            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                                        </div>
+
+                                        <div class="text-center pt-1 mb-5 pb-1">
+                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3 w-100" type="submit">Connexion</button>
+                                            <a class="text-muted" href="#!">Mot de passe oublié</a>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-center pb-4">
+                                            <p class="mb-0 me-2">Pas encore de compte ?</p>
+                                            <a href="{{ path('app_register') }}" class="btn btn-outline-danger">Inscription</a>
+                                        </div>
+
+                                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                                    </form>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                                    <h4 class="mb-4">Nous sommes plus qu'une simple entreprise</h4>
+                                    <p class="small mb-0">
+                                        Nous sommes une communauté dont vous faites partie, nous avons besoin de vous de votre expérience et de votre sens du partage pour alimenter le site internet<br>
+                                        Vous allez être les acteurs principaux de ce site. Prêt ? Action !
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}
