@@ -1,3 +1,32 @@
-h1 {
-  color: pink;
+#homepage {
+  .hero {
+    width: 100%;
+    height: 500px;
+    img {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .grid-section {
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+    .trick-item {
+      height: 160px;
+      a {
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      a:hover {
+        opacity: 0.8;
+      }
+    }
+  }
 }

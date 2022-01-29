@@ -1,13 +1,43 @@
 {% extends 'base.html.twig' %}
 
 {% block stylesheet %}
-    {{ encore_entry_link_tags('homepage') }}
+    {{ encore_entry_link_tags('app') }}
 {% endblock %}
 
 {% block title %}Snowtrick{% endblock %}
 
 {% block body %}
 
-    <h1>Hello World !</h1>
+    <div id="homepage">
+        <div class="hero">
+            <img src="https://static.seetheworld.com/image_uploader/photos/14/original/great-pre-season-snow-conditions-in-curchevel-courchevel-valley.jpg" alt="montagne">
+        </div>
+
+        <h2 class="text-center">Figures</h2>
+
+        <div class="grid-section">
+            <div class="trick-item">
+                <a href="#"><img src="https://static.seetheworld.com/image_uploader/photos/14/original/great-pre-season-snow-conditions-in-curchevel-courchevel-valley.jpg" alt="img"></a>
+            </div>
+            <div class="trick-item">
+                <a href="#"><img src="https://static.seetheworld.com/image_uploader/photos/14/original/great-pre-season-snow-conditions-in-curchevel-courchevel-valley.jpg" alt="img"></a>
+            </div>
+            <div class="trick-item">
+                <a href="#"><img src="https://static.seetheworld.com/image_uploader/photos/14/original/great-pre-season-snow-conditions-in-curchevel-courchevel-valley.jpg" alt="img"></a>
+            </div>
+            <div class="trick-item">
+                <a href="#"><img src="https://static.seetheworld.com/image_uploader/photos/14/original/great-pre-season-snow-conditions-in-curchevel-courchevel-valley.jpg" alt="img"></a>
+            </div>
+            <div class="trick-item">
+                <a href="#"><img src="https://static.seetheworld.com/image_uploader/photos/14/original/great-pre-season-snow-conditions-in-curchevel-courchevel-valley.jpg" alt="img"></a>
+            </div>
+            <div class="trick-item">
+                <a href="#"><img src="https://static.seetheworld.com/image_uploader/photos/14/original/great-pre-season-snow-conditions-in-curchevel-courchevel-valley.jpg" alt="img"></a>
+            </div>
+            <div class="trick-item">
+                <a href="#"><img src="https://static.seetheworld.com/image_uploader/photos/14/original/great-pre-season-snow-conditions-in-curchevel-courchevel-valley.jpg" alt="img"></a>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

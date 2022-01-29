@@ -16,7 +16,7 @@
         {% endblock %}
     </head>
     <body>
-        <div class="container">
+        <div class="container-fluid">
             {% for rubrique, messages in app.flashes %}
                 <div class="alert alert-{{ rubrique }}">
                     {% for message in messages %}
