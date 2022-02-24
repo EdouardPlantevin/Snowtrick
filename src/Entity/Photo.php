@@ -16,9 +16,6 @@ class Photo
     #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $path;
-
     #[ORM\ManyToOne(targetEntity: Trick::class, inversedBy: 'photos')]
     private $trick;
 
@@ -35,18 +32,6 @@ class Photo
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getPath(): ?string
-    {
-        return $this->path;
-    }
-
-    public function setPath(string $path): self
-    {
-        $this->path = $path;
 
         return $this;
     }
