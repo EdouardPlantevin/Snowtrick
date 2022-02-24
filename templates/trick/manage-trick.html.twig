@@ -1,0 +1,45 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    {% if action == "add" %}
+        Créer
+    {% else %}
+        Modifier
+    {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+        <div id="manage_trick" class="row">
+            <h1>Créer un nouveau trick</h1>
+            <div class="col-md-6">
+                {{ form_row(form.title) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.photos) }}
+            </div>
+            <div class="col-12">
+                {{ form_row(form.description) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.categories) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.video) }}
+            </div>
+            <button type="submit" class="btn btn-primary">
+                {% if action == "add" %}
+                    Créer
+                {% else %}
+                    Modifier
+                {% endif %}
+            </button>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}{% endblock %}
