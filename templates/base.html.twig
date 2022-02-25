@@ -52,7 +52,6 @@
                                     <a class="nav-link" href="{{ path('add_trick') }}">Créer un trick</a>
                                 </li>
 
-
                             {% else %}
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
@@ -61,6 +60,9 @@
                                     <a class="nav-link" href="{{ path('app_register') }}">Inscription</a>
                                 </li>
                             {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('tricks') }}">Liste des tricks</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
