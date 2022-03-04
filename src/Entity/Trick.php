@@ -6,8 +6,10 @@ use App\Repository\TrickRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
+#[UniqueEntity(fields: "title", message: "Le trick existe déjà")]
 class Trick
 {
     #[ORM\Id]
@@ -37,10 +39,10 @@ class Trick
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'tricks')]
     private $categories;
 
-    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class)]
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class, cascade: ["persist", "remove"])]
     private $videos;
 
-    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Photo::class)]
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Photo::class, cascade: ["persist", "remove"])]
     private $photos;
 
     public function __construct()

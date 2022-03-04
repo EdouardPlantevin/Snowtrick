@@ -20,7 +20,11 @@
                 {{ form_row(form.title) }}
             </div>
             <div class="col-md-6">
-                {{ form_row(form.photos) }}
+                {% if action == "add" %}
+                    {{ form_row(form.photos, {required: true}) }}
+                {% else %}
+                    {{ form_row(form.photos) }}
+                {% endif %}
             </div>
             <div class="col-12">
                 {{ form_row(form.description) }}
@@ -42,4 +46,5 @@
     {{ form_end(form) }}
 {% endblock %}
 
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+{% endblock %}

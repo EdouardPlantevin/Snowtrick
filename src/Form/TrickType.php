@@ -16,12 +16,14 @@ class TrickType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $video = $options['video'];
         $builder
             ->add('title', TextType::class, [
                 'label' => 'Titre'
             ])
             ->add('description', CKEditorType::class, [
-                'label' => 'Description'
+                'label' => 'Description',
+                'required' => true
             ])
             ->add('categories', EntityType::class, [
                 'class' => Category::class,
@@ -41,7 +43,8 @@ class TrickType extends AbstractType
             ->add('video', TextType::class, [
                 'label' => 'Ajoute une vidéo',
                 'required' => false,
-                'mapped' => false
+                'mapped' => false,
+                'data' => $video
             ])
         ;
     }
@@ -50,6 +53,10 @@ class TrickType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Trick::class,
+        ]);
+
+        $resolver->setRequired([
+            'video',
         ]);
     }
 }

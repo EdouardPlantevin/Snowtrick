@@ -18,3 +18,90 @@
     width: 100%;
   }
 }
+
+#tricks {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 30px;
+  grid-auto-rows: minmax(100px, auto);
+  padding-top: 10px;
+  .trick-item {
+    padding-bottom: 0px;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    a {
+      img {
+        width: 100%;
+        height: 200px;
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
+        object-fit: cover;
+      }
+    }
+    .info-trick {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 50px;
+      padding: 0 20px;
+      .name-trick {
+        font-weight: 500;
+        font-style: italic;
+      }
+      .action-trick {
+        a:first-child {
+          margin-right: 10px;
+        }
+        a {
+          font-size: 18px;
+          color: black;
+        }
+      }
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+#show-trick {
+  .carousel {
+    height: 400px;
+    .carousel-inner {
+      height: 100%;
+      img {
+        object-fit: cover;
+      }
+    }
+  }
+
+  .container-trick {
+    .hero-trick {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+    .content {
+      text-align: justify;
+    }
+  }
+}
+
+@media (max-width: 699px) {
+  #show-trick {
+    .carousel {
+      height: 200px;
+      .carousel-inner {
+        height: 100%;
+      }
+    }
+
+    .container-trick {
+      .hero-trick {
+        flex-direction: column;
+      }
+    }
+  }
+}
