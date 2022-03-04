@@ -36,6 +36,7 @@
         height: 200px;
         border-top-right-radius: 5px;
         border-top-left-radius: 5px;
+        object-fit: cover;
       }
     }
     .info-trick {
@@ -61,6 +62,46 @@
 
     a:hover {
       opacity: 0.8;
+    }
+  }
+}
+
+#show-trick {
+  .carousel {
+    height: 400px;
+    .carousel-inner {
+      height: 100%;
+      img {
+        object-fit: cover;
+      }
+    }
+  }
+
+  .container-trick {
+    .hero-trick {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+    .content {
+      text-align: justify;
+    }
+  }
+}
+
+@media (max-width: 699px) {
+  #show-trick {
+    .carousel {
+      height: 200px;
+      .carousel-inner {
+        height: 100%;
+      }
+    }
+
+    .container-trick {
+      .hero-trick {
+        flex-direction: column;
+      }
     }
   }
 }

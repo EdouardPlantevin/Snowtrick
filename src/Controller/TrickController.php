@@ -17,11 +17,6 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[Route('/trick')]
 class TrickController extends AbstractController
 {
-/*    #[Route('/{slug}', name: 'show_trick')]
-    public function index(Trick $trick): Response
-    {
-        return $this->render('');
-    }*/
 
     #[Route('/liste-des-tricks', name: 'tricks')]
     public function index(TrickRepository $trickRepository): Response
@@ -135,6 +130,31 @@ class TrickController extends AbstractController
             'form' => $form->createView(),
             'action' => 'edit'
         ]);
+    }
+
+    #[Route('/{slug}', name: 'show_trick')]
+    public function show(Trick $trick): Response
+    {
+        return $this->render('trick/show.html.twig', [
+            'trick' => $trick
+        ]);
+    }
+
+    #[Route('/suppresion-trick/{slug}', name: 'delete_trick')]
+    public function delete(Trick $trick, EntityManagerInterface $manager): Response
+    {
+
+        foreach($trick->getPhotos() as $photo)
+        {
+            if(file_exists($this->getParameter('trick_img') . '/' . $photo->getTitle()))
+            {
+                unlink($this->getParameter('trick_img') . '/' . $photo->getTitle());
+            }
+        }
+        $manager->remove($trick);
+        $manager->flush();
+        $this->addFlash('success', 'Le trick à bien été supprimer');
+        return $this->redirectToRoute('tricks');
     }
 
     private function generateUniqueFileName()

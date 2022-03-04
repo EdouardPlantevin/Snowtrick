@@ -2,11 +2,37 @@
 
 {% block title %}{{ trick.title }}{% endblock %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}{% endblock %}
 
 {% block body %}
-    <div id="show-trick">
-        
+    <div id="show-trick" class="container">
+        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for photo in trick.photos %}
+                    <div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
+                        <img src="{{ asset('images/trick/' ~ photo.title) }}" class="d-block w-100" alt="{{ trick.title }}">
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Precedent</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Suivant</span>
+            </button>
+        </div>
+        <div class="container-trick">
+            <div class="hero-trick">
+                <h1>{{ trick.title }}</h1>
+                <span>Ecrit par {{ trick.user.username }} {{ (trick.updatedAt) ? 'Mise à jour le ' ~ trick.updatedAt | date('d/m/Y') : 'Ecrit le ' ~ trick.createdAt | date('d/m/Y') }}</span>
+            </div>
+            <div class="content">
+                {{ trick.description | raw }}
+            </div>
+        </div>
     </div>
 {% endblock %}
 

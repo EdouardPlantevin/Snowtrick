@@ -39,10 +39,10 @@ class Trick
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'tricks')]
     private $categories;
 
-    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class)]
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class, cascade: ["persist", "remove"])]
     private $videos;
 
-    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Photo::class)]
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Photo::class, cascade: ["persist", "remove"])]
     private $photos;
 
     public function __construct()
