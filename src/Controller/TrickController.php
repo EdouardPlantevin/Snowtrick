@@ -82,11 +82,10 @@ class TrickController extends AbstractController
         ]);
     }
 
-    #[Route('/modifier/{slug}')]
+    #[Route('/modifier/{slug}', name: 'edit_trick')]
     public function edit(Trick $trick, Request $request, EntityManagerInterface $manager)
     {
-        $oldVideo = $trick->getVideo()->last()->getUrl() ?? '';
-        $form = $this->createForm(TrickType::class, $trick, ['video' => $oldVideo]);
+        $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {

@@ -76,15 +76,31 @@
       }
     }
   }
-
-  .container-trick {
-    .hero-trick {
-      display: flex;
-      justify-content: space-between;
-      margin: 20px 0;
+  .container-content {
+    display: flex;
+    .container-trick {
+      width: 80%;
+      .hero-trick {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+      }
+      .content {
+        text-align: justify;
+      }
     }
-    .content {
-      text-align: justify;
+
+    .container-video {
+      width: 20%;
+      margin: 20px 0 0 20px;
+
+      .videos {
+        .video {
+          height: 210px;
+          border-radius: 10px;
+          width: 100%;
+        }
+      }
     }
   }
 }
@@ -97,10 +113,18 @@
         height: 100%;
       }
     }
+    .container-content {
+      display: block;
+      .container-trick {
+        width: 100%;
+        .hero-trick {
+          flex-direction: column;
+        }
+      }
 
-    .container-trick {
-      .hero-trick {
-        flex-direction: column;
+      .container-video {
+        width: 100%;
+        margin: 0;
       }
     }
   }
