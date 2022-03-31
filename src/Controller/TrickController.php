@@ -6,6 +6,7 @@ use App\Entity\Photo;
 use App\Entity\Trick;
 use App\Entity\Video;
 use App\Form\TrickType;
+use App\Repository\PhotoRepository;
 use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -83,10 +84,11 @@ class TrickController extends AbstractController
     }
 
     #[Route('/modifier/{slug}', name: 'edit_trick')]
-    public function edit(Trick $trick, Request $request, EntityManagerInterface $manager)
+    public function edit(Trick $trick, Request $request, EntityManagerInterface $manager, PhotoRepository $photoRepository)
     {
-        $form = $this->createForm(TrickType::class, $trick);
+        $form = $this->createForm(TrickType::class, $trick, ['video' => $trick->getVideos()->first()->getUrl() ?? '']);
         $form->handleRequest($request);
+        $photos = $photoRepository->findBy(['trick' => $trick]);
         if ($form->isSubmitted() && $form->isValid())
         {
             if($request->files->get('trick'))
@@ -103,22 +105,15 @@ class TrickController extends AbstractController
                     );
 
                     $photo->setTitle($fileName)
-                        ->setTrick($trick);
+                            ->setTrick($trick);
                     $trick->addPhoto($photo);
                     $manager->persist($photo);
                 }
             }
-            if($request->get('trick')['video'])
-            {
-                $video = new Video();
-                $video->setTitle($trick->getTitle())
-                    ->setTrick($trick)
-                    ->setUrl($request->get('trick')['video']);
-                $manager->persist($video);
-                $trick->addVideo($video);
-            }
 
             $trick->setUpdatedAt(new \DateTime());
+
+            $manager->flush();
 
             $this->addFlash('success', 'Le trick à bien été mis à jour');
             return $this->redirectToRoute('homepage');
@@ -127,7 +122,8 @@ class TrickController extends AbstractController
 
         return $this->render('trick/manage-trick.html.twig', [
             'form' => $form->createView(),
-            'action' => 'edit'
+            'action' => 'edit',
+            'photos' => $photos
         ]);
     }
 

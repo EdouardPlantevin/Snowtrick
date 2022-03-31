@@ -26,6 +26,16 @@
                     {{ form_row(form.photos) }}
                 {% endif %}
             </div>
+            {% if action == "edit" %}
+                <div class="col-12 wrap-image">
+                    {% for photo in photos %}
+                        <div class="container-img">
+                            <span class="delete-photo"><i class="fal fa-times-circle"></i></span>
+                            <img src="{{ asset('/images/trick/' ~ photo.title) }}">
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div class="col-12">
                 {{ form_row(form.description) }}
             </div>
@@ -47,4 +57,15 @@
 {% endblock %}
 
 {% block javascripts %}
+
+    <script>
+        let buttons = document.getElementsByClassName('.delete-photo')
+
+        console.log(buttons)
+
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].style.color = "red";
+        }
+    </script>
+
 {% endblock %}
