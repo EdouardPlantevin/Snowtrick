@@ -156,12 +156,12 @@ class Trick
     /**
      * @return Collection|Video[]
      */
-    public function getVideo(): Collection
+    public function getVideos(): Collection
     {
         return $this->videos;
     }
 
-    public function addVideo(Video $video): self
+    public function addVideos(Video $video): self
     {
         if (!$this->videos->contains($video)) {
             $this->videos[] = $video;

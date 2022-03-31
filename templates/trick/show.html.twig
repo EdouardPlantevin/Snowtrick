@@ -24,13 +24,25 @@
                 <span class="visually-hidden">Suivant</span>
             </button>
         </div>
-        <div class="container-trick">
-            <div class="hero-trick">
-                <h1>{{ trick.title }}</h1>
-                <span>Ecrit par {{ trick.user.username }} {{ (trick.updatedAt) ? 'Mise à jour le ' ~ trick.updatedAt | date('d/m/Y') : 'Ecrit le ' ~ trick.createdAt | date('d/m/Y') }}</span>
+        <div class="container-content">
+            <div class="container-trick">
+                <div class="hero-trick">
+                    <h1>{{ trick.title }}</h1>
+                    <span>E
+                        Écrit par {{ trick.user.username }} {{ (trick.updatedAt) ? 'Mise à jour le ' ~ trick.updatedAt | date('d/m/Y') : 'Ecrit le ' ~ trick.createdAt | date('d/m/Y') }}</span>
+                </div>
+                <div class="content">
+                    {{ trick.description | raw }}
+                </div>
             </div>
-            <div class="content">
-                {{ trick.description | raw }}
+            <div class="container-video">
+                <h2 class="text-center">Vidéos</h2>
+
+                <div class="videos">
+                    {% for video in trick.videos %}
+                        <embed src="{{ video.url }}" type="video/webm" class="video">
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
