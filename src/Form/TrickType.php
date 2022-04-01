@@ -16,7 +16,6 @@ class TrickType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $video = $options['video'];
         $builder
             ->add('title', TextType::class, [
                 'label' => 'Titre'
@@ -44,7 +43,6 @@ class TrickType extends AbstractType
                 'label' => 'Ajoute une vidéo',
                 'required' => false,
                 'mapped' => false,
-                'data' => $video
             ])
         ;
     }
@@ -53,10 +51,6 @@ class TrickType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Trick::class,
-        ]);
-
-        $resolver->setRequired([
-            'video',
         ]);
     }
 }

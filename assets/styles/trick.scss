@@ -2,6 +2,7 @@
   width: 700px;
   margin: 0 auto;
   margin-top: 50px;
+  margin-bottom: 150px;
 
   .wrap-image {
     display: grid;
@@ -131,7 +132,16 @@
   }
 }
 
+@media (max-width: 1000px) {
+  #tricks {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 699px) {
+  #tricks {
+    grid-template-columns: 1fr;
+  }
   #show-trick {
     .carousel {
       height: 200px;
