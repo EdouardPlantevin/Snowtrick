@@ -29,6 +29,34 @@
     }
 
   }
+
+  .wrap-video {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 30px;
+    grid-auto-rows: minmax(100px, auto);
+
+    .container-video {
+      position: relative;
+      span {
+        position: absolute;
+        right: -5px;
+        top: -10px;
+        z-index: 2;
+        i {
+          background: #ffffff;
+          border-radius: 20px;
+          cursor: pointer;
+          font-size: 18px;
+        }
+      }
+      embed {
+        width: 100%;
+      }
+    }
+  }
   h1 {
     text-align: center;
     margin-bottom: 30px;
