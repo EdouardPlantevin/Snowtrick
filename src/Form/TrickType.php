@@ -43,6 +43,10 @@ class TrickType extends AbstractType
                 'label' => 'Ajoute une vidéo',
                 'required' => false,
                 'mapped' => false,
+                'attr' => [
+                    'class' => 'video',
+                ],
+                'block_name' => "video"
             ])
         ;
     }

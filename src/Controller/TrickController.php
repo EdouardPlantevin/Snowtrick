@@ -8,6 +8,7 @@ use App\Entity\Video;
 use App\Form\TrickType;
 use App\Repository\PhotoRepository;
 use App\Repository\TrickRepository;
+use App\Repository\VideoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -68,8 +69,27 @@ class TrickController extends AbstractController
                         ->setTrick($trick)
                         ->setUrl($request->get('trick')['video']);
                 $manager->persist($video);
-                $trick->addVideo($video);
+                $trick->addVideos($video);
             }
+
+            $exist = true;
+            $index = 1;
+            do {
+                if ($request->get("video-$index") != null)
+                {
+                    $video = new Video();
+                    $video->setTrick($trick)
+                        ->setTitle($trick->getTitle())
+                        ->setUrl($request->get("video-$index"));
+                    $manager->persist($video);
+                    $trick->addVideos($video);
+                    $index++;
+                }
+                else
+                {
+                    $exist = false;
+                }
+            } while ($exist);
 
             $manager->persist($trick);
             $manager->flush();
@@ -85,12 +105,13 @@ class TrickController extends AbstractController
     }
 
     #[Route('/modifier/{slug}', name: 'edit_trick')]
-    public function edit(Trick $trick, Request $request, EntityManagerInterface $manager, PhotoRepository $photoRepository)
+    public function edit(Trick $trick, Request $request, EntityManagerInterface $manager, PhotoRepository $photoRepository, VideoRepository $videoRepository)
     {
 
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
         $photos = $photoRepository->findBy(['trick' => $trick]);
+        $videos = $videoRepository->findBy(['trick' => $trick]);
         if ($form->isSubmitted() && $form->isValid())
         {
             if($request->files->get('trick'))
@@ -113,6 +134,35 @@ class TrickController extends AbstractController
                 }
             }
 
+            if ($request->request->all()['trick']['video'] != "")
+            {
+                $video = new Video();
+                $video->setTrick($trick)
+                    ->setTitle($trick->getTitle())
+                    ->setUrl($request->request->all()['trick']['video']);
+                $manager->persist($video);
+                $trick->addVideos($video);
+            }
+
+            $exist = true;
+            $index = 1;
+            do {
+                if ($request->get("video-$index") != null)
+                {
+                    $video = new Video();
+                    $video->setTrick($trick)
+                        ->setTitle($trick->getTitle())
+                        ->setUrl($request->get("video-$index"));
+                    $manager->persist($video);
+                    $trick->addVideos($video);
+                    $index++;
+                }
+                else
+                {
+                    $exist = false;
+                }
+            } while ($exist);
+
             $trick->setUpdatedAt(new \DateTime());
 
             $manager->flush();
@@ -125,7 +175,8 @@ class TrickController extends AbstractController
         return $this->render('trick/manage-trick.html.twig', [
             'form' => $form->createView(),
             'action' => 'edit',
-            'photos' => $photos
+            'photos' => $photos,
+            'videos' => $videos
         ]);
     }
 
@@ -160,18 +211,48 @@ class TrickController extends AbstractController
     }
 
     #[Route('/suppression-image/json', name: 'delete_img')]
-    public function removeImg(PhotoRepository $photoRepository, Request $request, EntityManagerInterface $manager)
+    public function removeImg(PhotoRepository $photoRepository, Request $request, EntityManagerInterface $manager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $id = $data['id'];
 
+
         $photo = $photoRepository->find($id);
-        $manager->remove($photo);
-        $manager->flush();
 
-        return new JsonResponse([
-            'status' => 'success'
-        ]);
+        if (count($photo->getTrick()->getPhotos()) >= 2)
+        {
+            $manager->remove($photo);
+            $manager->flush();
+            return new JsonResponse([
+                'status' => 'success'
+            ]);
+        } else {
+            return new JsonResponse([
+                'status' => 'error'
+            ]);
+        }
+    }
 
+    #[Route('/suppression-video/json', name: 'delete_img')]
+    public function removeVideo(VideoRepository $videoRepository, Request $request, EntityManagerInterface $manager): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $id = $data['id'];
+
+
+        $video = $videoRepository->find($id);
+
+        if (count($video->getTrick()->getVideos()) >= 2)
+        {
+            $manager->remove($video);
+            $manager->flush();
+            return new JsonResponse([
+                'status' => 'success'
+            ]);
+        } else {
+            return new JsonResponse([
+                'status' => 'error'
+            ]);
+        }
     }
 }

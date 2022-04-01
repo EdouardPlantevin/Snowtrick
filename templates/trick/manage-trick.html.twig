@@ -39,13 +39,25 @@
             <div class="col-12">
                 {{ form_row(form.description) }}
             </div>
+            {% if action == "edit" %}
+                <div class="col-12 wrap-video">
+                    {% for video in videos %}
+                    <div class="container-video">
+                        <span class="delete-video" id="video-{{ video.id }}" onclick="removeVideo({{ video.id }});"><i class="fal fa-times-circle"></i></span>
+                        <embed src="{{ video.url }}" type="video/webm">
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div class="col-md-6">
                 {{ form_row(form.categories) }}
             </div>
             <div class="col-md-6">
                 {{ form_row(form.video) }}
-                <button type="button" class="btn btn-primary w-100" onclick="addVideo()">Ajouter une nouvelle video</button>
-                {#<div class="form-group"><label for="trick_video">Ajoute une vidéo</label><input type="text" id="trick_video" name="trick[video]" class="form-control form-control"></div>#}
+                <div class="d-flex">
+                    <button type="button" class="btn btn-primary w-100" onclick="addVideo()"><i class="fas fa-plus"></i></button>
+                    <button type="button" class="btn btn-danger w-100 d-none remove-input-btn" onclick="removeInputVideo()"><i class="fas fa-minus"></i></button>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">
                 {% if action == "add" %}
@@ -60,10 +72,33 @@
 
 {% block javascripts %}
 
+    {{ parent() }}
+    {{ encore_entry_script_tags('trick') }}
+
     <script>
         function addVideo()
         {
+            var lastVideo = document.querySelectorAll(".video");
 
+            lastVideo[lastVideo.length - 1].insertAdjacentHTML('afterend', `
+                <div class="form-group"></span><label for="trick_video">Ajoute une vidéo</label><input type="text" name="video-${lastVideo.length}" class="video form-control form-control" required></div>
+            `);
+
+            let btnRemoveInput = document.querySelector(".remove-input-btn");
+            btnRemoveInput.classList.remove('d-none')
+
+        }
+
+        function removeInputVideo()
+        {
+            var lastVideo = document.querySelector(".video:last-child");
+
+            if (lastVideo.id != 'trick_video') {
+                lastVideo.parentNode.remove();
+            } else {
+                let btnRemoveInput = document.querySelector(".remove-input-btn");
+                btnRemoveInput.classList.add('d-none')
+            }
         }
 
         function removeImg(id)
@@ -77,16 +112,38 @@
                     id: id
                 }),
             })
-            .then((response) => {
-                return response.json();
-            })
-            .then((result) => {
-                let imgDiv = document.querySelector("#image-" + id).parentNode
-                imgDiv.style.display = "none"
-            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((result) => {
+                    if (result.status === "success") {
+                        let imgDiv = document.querySelector("#image-" + id).parentNode
+                        imgDiv.style.display = "none"
+                    }
+                })
         }
 
-
+        function removeVideo(id)
+        {
+            fetch('/trick/suppression-video/json', {
+                method: 'post',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id
+                }),
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((result) => {
+                    if (result.status === "success") {
+                        let imgDiv = document.querySelector("#video-" + id).parentNode
+                        imgDiv.style.display = "none"
+                    }
+                })
+        }
     </script>
 
 {% endblock %}
