@@ -2,14 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Photo;
 use App\Entity\Trick;
 use App\Entity\Video;
+use App\Form\CommentType;
 use App\Form\TrickType;
+use App\Repository\CommentRepository;
 use App\Repository\PhotoRepository;
 use App\Repository\TrickRepository;
 use App\Repository\VideoRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +24,8 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[Route('/trick')]
 class TrickController extends AbstractController
 {
+
+    public function __construct(private EntityManagerInterface $manager){}
 
     #[Route('/liste-des-tricks', name: 'tricks')]
     public function index(TrickRepository $trickRepository): Response
@@ -181,14 +187,40 @@ class TrickController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'show_trick')]
-    public function show(Trick $trick): Response
+    public function show(Trick $trick, Request $request, PaginatorInterface $paginator, CommentRepository $commentRepository): Response
     {
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $comment->setCreatedAt(new \DateTimeImmutable())
+                    ->setAuthor($this->getUser())
+                    ->setTrick($trick);
+            $this->manager->persist($comment);
+            $this->manager->flush();
+
+            $this->addFlash('success', 'Votre commentaire  à bien été enregistrer');
+
+            return $this->redirect($request->getUri());
+        }
+
+        $comments = $paginator->paginate(
+            $commentRepository->findBy(['trick' => $trick], ['createdAt' => 'ASC']),
+            $request->query->getInt('page', 1),
+            2
+        );
+
+
         return $this->render('trick/show.html.twig', [
-            'trick' => $trick
+            'trick' => $trick,
+            'form' => $form->createView(),
+            'comments' => $comments
         ]);
     }
 
-    #[Route('/suppresion-trick/{slug}', name: 'delete_trick')]
+    #[Route('/suppression-trick/{slug}', name: 'delete_trick')]
     public function delete(Trick $trick, EntityManagerInterface $manager): Response
     {
 
@@ -210,13 +242,11 @@ class TrickController extends AbstractController
         return md5(uniqid());
     }
 
-    #[Route('/suppression-image/json', name: 'delete_img')]
-    public function removeImg(PhotoRepository $photoRepository, Request $request, EntityManagerInterface $manager): JsonResponse
+    #[Route('/suppression-image/json', name: 'delete_img', methods: ["POST"])]
+    public function removeImg(PhotoRepository $photoRepository, Request $request, EntityManagerInterface $manager)
     {
         $data = json_decode($request->getContent(), true);
         $id = $data['id'];
-
-
         $photo = $photoRepository->find($id);
 
         if (count($photo->getTrick()->getPhotos()) >= 2)
@@ -233,7 +263,7 @@ class TrickController extends AbstractController
         }
     }
 
-    #[Route('/suppression-video/json', name: 'delete_img')]
+    #[Route('/suppression-video/json', name: 'delete_vod', methods: ["POST"])]
     public function removeVideo(VideoRepository $videoRepository, Request $request, EntityManagerInterface $manager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
