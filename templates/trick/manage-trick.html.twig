@@ -30,7 +30,7 @@
                 <div class="col-12 wrap-image">
                     {% for photo in photos %}
                         <div class="container-img">
-                            <span class="delete-photo"><i class="fal fa-times-circle"></i></span>
+                            <span class="delete-photo" id="image-{{ photo.id }}" onclick="removeImg({{ photo.id }});"><i class="fal fa-times-circle"></i></span>
                             <img src="{{ asset('/images/trick/' ~ photo.title) }}">
                         </div>
                     {% endfor %}
@@ -44,6 +44,8 @@
             </div>
             <div class="col-md-6">
                 {{ form_row(form.video) }}
+                <button type="button" class="btn btn-primary w-100" onclick="addVideo()">Ajouter une nouvelle video</button>
+                {#<div class="form-group"><label for="trick_video">Ajoute une vidéo</label><input type="text" id="trick_video" name="trick[video]" class="form-control form-control"></div>#}
             </div>
             <button type="submit" class="btn btn-primary">
                 {% if action == "add" %}
@@ -59,13 +61,32 @@
 {% block javascripts %}
 
     <script>
-        let buttons = document.getElementsByClassName('.delete-photo')
+        function addVideo()
+        {
 
-        console.log(buttons)
-
-        for (var i = 0; i < buttons.length; i++) {
-            buttons[i].style.color = "red";
         }
+
+        function removeImg(id)
+        {
+            fetch('/trick/suppression-image/json', {
+                method: 'post',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id
+                }),
+            })
+            .then((response) => {
+                return response.json();
+            })
+            .then((result) => {
+                let imgDiv = document.querySelector("#image-" + id).parentNode
+                imgDiv.style.display = "none"
+            })
+        }
+
+
     </script>
 
 {% endblock %}

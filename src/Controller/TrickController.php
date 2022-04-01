@@ -10,6 +10,7 @@ use App\Repository\PhotoRepository;
 use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,7 +34,7 @@ class TrickController extends AbstractController
     public function add(Request $request, SluggerInterface $slugger, EntityManagerInterface $manager)
     {
         $trick = new Trick();
-        $form = $this->createForm(TrickType::class, $trick, ['video' => '']);
+        $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
@@ -86,7 +87,8 @@ class TrickController extends AbstractController
     #[Route('/modifier/{slug}', name: 'edit_trick')]
     public function edit(Trick $trick, Request $request, EntityManagerInterface $manager, PhotoRepository $photoRepository)
     {
-        $form = $this->createForm(TrickType::class, $trick, ['video' => $trick->getVideos()->first()->getUrl() ?? '']);
+
+        $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
         $photos = $photoRepository->findBy(['trick' => $trick]);
         if ($form->isSubmitted() && $form->isValid())
@@ -155,5 +157,21 @@ class TrickController extends AbstractController
     private function generateUniqueFileName()
     {
         return md5(uniqid());
+    }
+
+    #[Route('/suppression-image/json', name: 'delete_img')]
+    public function removeImg(PhotoRepository $photoRepository, Request $request, EntityManagerInterface $manager)
+    {
+        $data = json_decode($request->getContent(), true);
+        $id = $data['id'];
+
+        $photo = $photoRepository->find($id);
+        $manager->remove($photo);
+        $manager->flush();
+
+        return new JsonResponse([
+            'status' => 'success'
+        ]);
+
     }
 }
