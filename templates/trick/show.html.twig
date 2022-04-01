@@ -35,6 +35,34 @@
                 <div class="content">
                     {{ trick.description | raw }}
                 </div>
+
+                <hr>
+                <h2>Espace commentaire</h2>
+                <div class="comment mb-5">
+                    {% if app.user %}
+                        {{ form_start(form) }}
+                            {{ form_widget(form.message) }}
+                            <button type="submit" class="btn btn-primary mt-2">Envoyer</button>
+                        {{ form_end(form) }}
+                    {% endif %}
+
+                    <div class="content-comment">
+                        {% for comment in comments %}
+                            <div class="comment-detail">
+                                <div class="avatar">
+                                    <img src="https://www.villa-thermae.fr/wp-content/uploads/2017/04/profile-icon-9.png" alt="photo de profil">
+                                </div>
+                                <div class="core">
+                                    <p>Écrit par {{ comment.author.username }} le <i>{{ comment.createdAt | date('d/m/Y') }}</i> à {{ comment.createdAt | date('H:i') }}</p>
+                                    <p>{{ comment.message }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="navigation">
+                            {{ knp_pagination_render(comments) }}
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="container-video">
                 <h2 class="text-center">Vidéos</h2>
