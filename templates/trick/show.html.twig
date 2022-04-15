@@ -50,7 +50,7 @@
                         {% for comment in comments %}
                             <div class="comment-detail">
                                 <div class="avatar">
-                                    <img src="https://www.villa-thermae.fr/wp-content/uploads/2017/04/profile-icon-9.png" alt="photo de profil">
+                                    <img src="{{ asset('/images/avatar/' ~ comment.author.avatar) }}" alt="photo de profil">
                                 </div>
                                 <div class="core">
                                     <p>Écrit par {{ comment.author.username }} le <i>{{ comment.createdAt | date('d/m/Y') }}</i> à {{ comment.createdAt | date('H:i') }}</p>

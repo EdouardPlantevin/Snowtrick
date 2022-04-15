@@ -16,9 +16,11 @@
                     <span class="name-trick">
                         {{ trick.title }}
                     </span>
-                    <span class="action-trick">
-                        <a href="{{ path('edit_trick', {'slug': trick.slug}) }}"><i class="fas fa-pencil-alt"></i></a><a href="{{ path('delete_trick', {'slug': trick.slug}) }}"><i class="fas fa-trash"></i></a>
-                    </span>
+                    {% if app.user and app.user == trick.user %}
+                        <span class="action-trick">
+                            <a href="{{ path('edit_trick', {'slug': trick.slug}) }}"><i class="fas fa-pencil-alt"></i></a><a href="{{ path('delete_trick', {'slug': trick.slug}) }}"><i class="fas fa-trash"></i></a>
+                        </span>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
