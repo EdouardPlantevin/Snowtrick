@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     trick_img: '%kernel.project_dir%/public/images/trick'
+    avatar_img: '%kernel.project_dir%/public/images/avatar'
 
 services:
     # default configuration for services in *this* file

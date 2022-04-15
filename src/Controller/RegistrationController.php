@@ -42,6 +42,24 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            $avatar = $request->files->get('registration_form')['avatar'];
+
+            if ($avatar != null)
+            {
+                $fileName = $this->generateUniqueFileName() . '.' . $avatar->guessExtension();
+
+                $avatar->move(
+                    $this->getParameter('avatar_img'),
+                    $fileName
+                );
+
+                $user->setAvatar($fileName);
+            }
+            else
+            {
+                $user->setAvatar('default.png');
+            }
+
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -85,5 +103,10 @@ class RegistrationController extends AbstractController
         $this->addFlash('success', 'Votre adresse email à bien été vérifié');
 
         return $this->redirectToRoute('homepage');
+    }
+
+    private function generateUniqueFileName()
+    {
+        return md5(uniqid());
     }
 }

@@ -209,9 +209,8 @@ class TrickController extends AbstractController
         $comments = $paginator->paginate(
             $commentRepository->findBy(['trick' => $trick], ['createdAt' => 'ASC']),
             $request->query->getInt('page', 1),
-            2
+            10
         );
-
 
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
