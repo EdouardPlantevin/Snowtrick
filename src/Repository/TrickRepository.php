@@ -19,6 +19,14 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
+    public function findAllOrder()
+    {
+        return $this->createQueryBuilder('t')
+                ->orderBy('t.createdAt', 'DESC')
+                ->getQuery()
+                ->getResult();
+    }
+
     // /**
     //  * @return Trick[] Returns an array of Trick objects
     //  */

@@ -45,7 +45,7 @@ class Trick
     #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Photo::class, cascade: ["persist", "remove"])]
     private $photos;
 
-    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Comment::class)]
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Comment::class, cascade: ["persist", "remove"])]
     private $comments;
 
     public function __construct()

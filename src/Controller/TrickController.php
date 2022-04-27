@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Photo;
 use App\Entity\Trick;
+use App\Entity\TrickService;
 use App\Entity\Video;
 use App\Form\CommentType;
 use App\Form\TrickType;
@@ -31,11 +32,9 @@ class TrickController extends AbstractController
     public function index(TrickRepository $trickRepository): Response
     {
         return $this->render('trick/tricks.html.twig', [
-            'tricks' => $trickRepository->findAll()
+            'tricks' => $trickRepository->findAllOrder()
         ]);
     }
-
-
 
     #[Route('/creation', name: 'add_trick')]
     public function add(Request $request, SluggerInterface $slugger, EntityManagerInterface $manager)
@@ -45,57 +44,19 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
+            $trickService = new TrickService();
             $trick->setCreatedAt(new \DateTimeImmutable())
                   ->setUser($this->getUser())
                   ->setSlug($slugger->slug(strtolower($trick->getTitle())));
 
             if($request->files->get('trick'))
             {
-                foreach ($request->files->get('trick')['photos'] as $image)
-                {
-                    $photo = new Photo();
-
-                    $fileName = $this->generateUniqueFileName() . '.' . $image->guessExtension();
-
-                    $image->move(
-                        $this->getParameter('trick_img'),
-                        $fileName
-                    );
-
-                    $photo->setTitle($fileName)
-                            ->setTrick($trick);
-                    $trick->addPhoto($photo);
-                    $manager->persist($photo);
-                }
+                $trickService->savePhoto($request->files->get('trick')['photos'], $manager, $trick, $this->getParameter('trick_img'));
             }
             if($request->get('trick')['video'])
             {
-                $video = new Video();
-                $video->setTitle($trick->getTitle())
-                        ->setTrick($trick)
-                        ->setUrl($request->get('trick')['video']);
-                $manager->persist($video);
-                $trick->addVideos($video);
+                $trickService->saveVideo($request, $trick, $manager);
             }
-
-            $exist = true;
-            $index = 1;
-            do {
-                if ($request->get("video-$index") != null)
-                {
-                    $video = new Video();
-                    $video->setTrick($trick)
-                        ->setTitle($trick->getTitle())
-                        ->setUrl($request->get("video-$index"));
-                    $manager->persist($video);
-                    $trick->addVideos($video);
-                    $index++;
-                }
-                else
-                {
-                    $exist = false;
-                }
-            } while ($exist);
 
             $manager->persist($trick);
             $manager->flush();
@@ -120,54 +81,16 @@ class TrickController extends AbstractController
         $videos = $videoRepository->findBy(['trick' => $trick]);
         if ($form->isSubmitted() && $form->isValid())
         {
+            $trickService = new TrickService();
             if($request->files->get('trick'))
             {
-                foreach ($request->files->get('trick')['photos'] as $image)
-                {
-                    $photo = new Photo();
-
-                    $fileName = $this->generateUniqueFileName() . '.' . $image->guessExtension();
-
-                    $image->move(
-                        $this->getParameter('trick_img'),
-                        $fileName
-                    );
-
-                    $photo->setTitle($fileName)
-                            ->setTrick($trick);
-                    $trick->addPhoto($photo);
-                    $manager->persist($photo);
-                }
+                $trickService->savePhoto($request->files->get('trick')['photos'], $manager, $trick, $this->getParameter('trick_img'));
             }
 
             if ($request->request->all()['trick']['video'] != "")
             {
-                $video = new Video();
-                $video->setTrick($trick)
-                    ->setTitle($trick->getTitle())
-                    ->setUrl($request->request->all()['trick']['video']);
-                $manager->persist($video);
-                $trick->addVideos($video);
+                $trickService->saveVideo($request, $trick, $manager);
             }
-
-            $exist = true;
-            $index = 1;
-            do {
-                if ($request->get("video-$index") != null)
-                {
-                    $video = new Video();
-                    $video->setTrick($trick)
-                        ->setTitle($trick->getTitle())
-                        ->setUrl($request->get("video-$index"));
-                    $manager->persist($video);
-                    $trick->addVideos($video);
-                    $index++;
-                }
-                else
-                {
-                    $exist = false;
-                }
-            } while ($exist);
 
             $trick->setUpdatedAt(new \DateTime());
 
@@ -176,7 +99,6 @@ class TrickController extends AbstractController
             $this->addFlash('success', 'Le trick à bien été mis à jour');
             return $this->redirectToRoute('homepage');
         }
-
 
         return $this->render('trick/manage-trick.html.twig', [
             'form' => $form->createView(),
@@ -207,7 +129,7 @@ class TrickController extends AbstractController
         }
 
         $comments = $paginator->paginate(
-            $commentRepository->findBy(['trick' => $trick], ['createdAt' => 'ASC']),
+            $commentRepository->findBy(['trick' => $trick], ['createdAt' => 'DESC']),
             $request->query->getInt('page', 1),
             10
         );
@@ -222,7 +144,6 @@ class TrickController extends AbstractController
     #[Route('/suppression-trick/{slug}', name: 'delete_trick')]
     public function delete(Trick $trick, EntityManagerInterface $manager): Response
     {
-
         foreach($trick->getPhotos() as $photo)
         {
             if(file_exists($this->getParameter('trick_img') . '/' . $photo->getTitle()))
@@ -267,8 +188,7 @@ class TrickController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
         $id = $data['id'];
-
-
+        
         $video = $videoRepository->find($id);
 
         if (count($video->getTrick()->getVideos()) >= 2)
