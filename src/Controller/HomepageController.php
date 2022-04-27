@@ -12,7 +12,7 @@ class HomepageController extends AbstractController
     #[Route('/', name: 'homepage')]
     public function index(TrickRepository $trickRepository): Response
     {
-        $tricks = $trickRepository->findAll();
+        $tricks = $trickRepository->findAllOrder();
         return $this->render('homepage/index.html.twig', [
             'tricks' => $tricks
         ]);
